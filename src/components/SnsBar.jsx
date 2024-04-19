@@ -60,7 +60,7 @@ export default function Sns() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: 'flex', alignItems: 'center', marginRight:'290px'}}
+            sx={{ display: 'flex', alignItems: 'center', marginRight:'230px'}}  // 넓이의 70% 이런식으로 고쳐야 함
           >
             flownary
           </Typography>
