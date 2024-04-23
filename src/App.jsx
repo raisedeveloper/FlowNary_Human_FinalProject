@@ -10,7 +10,7 @@ import '@fontsource/roboto/700.css';
 
 const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
   return (
     // <AuthContextProvider>
       <QueryClientProvider client={queryClient}>
@@ -19,5 +19,3 @@ function App() {
     // </AuthContextProvider>
   );
 }
-                                      
-export default App;
