@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
+import axios from 'axios';
 
 import '../css/theme.css';
-import { register } from "../api/firebase";
-import { initializeApp } from 'firebase/app';
+import { initializeApp, } from 'firebase/app';
 import { GoogleAuthProvider, getAuth, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function Register() {
@@ -34,12 +34,18 @@ export default function Register() {
     }, []);
     const auth = getAuth();
 
-    // 구글 회원가입 진행
-    const loginWithGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .catch(console.error);
-    }
+    const loginWithGoogle = async () => {
+        try {
+            const auth = getAuth();
+            const provider = new GoogleAuthProvider();
+            await signInWithPopup(auth, provider);
+            alert('구글 로그인 성공!! 환영합니다!!');
+            console.log("구글 로그인 성공!");
+            navigate('/');
+        } catch (error) {
+            console.error("구글 로그인 오류:", error);
+        }
+    };
 
     // 회원가입 항목 입력시 값 변경
     const handleChange = e => {
@@ -70,12 +76,21 @@ export default function Register() {
             return;
         }
 
-        createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password)
+        await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password)
             .then(() => {
                 console.log("회원가입 성공");
                 alert('회원가입 성공. 환영합니다.');
-                register(userInfo);
-                navigate('/login');
+                axios.get("/user/register", {
+                    params: {
+                        email: userInfo.email,
+                        pwd: userInfo.password,
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
+                setTimeout(() => {
+                    navigate('/login');
+                }, 1000); // 1000 밀리초 = 1초 딜레이
             })
             .catch(error => {
                 // 이미 사용 중인 이메일일 경우 또는 다른 오류가 발생한 경우
@@ -108,9 +123,9 @@ export default function Register() {
                     <br />
                     <input type="password" name='confirmPassword' placeholder="비밀번호 확인" className="commonInputStyle" onChange={handleChange} />
                     <br /><br />
-                    <Link to="/login" onClick={handleSubmit} className={`custom-button ${theme}`}>가입하기</Link>
+                    <Link className={`custom-button ${theme}`} onClick={handleSubmit}>가입하기</Link>
 
-                    <hr style={{ border: '2px solid rgba(255, 255, 255, 0.4)' }} />
+                    <hr style={{ border: '1px solid rgba(255, 255, 255, 0.4)' }} />
                     <p style={{ color: theme === 'light' ? '#dca3e7' : '#ffffff' }}>계정이 이미 있으신가요?</p>
                     <Link onClick={loginWithGoogle} className={`custom-button ${theme}`}>Google <br /> 로그인</Link>
                     <Link to="/login" className={`custom-button ${theme}`}>FlowNary <br />로그인</Link>
