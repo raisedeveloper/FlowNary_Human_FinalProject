@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
   return (
     // <AuthContextProvider>
       <QueryClientProvider client={queryClient}>
@@ -14,5 +14,3 @@ function App() {
     // </AuthContextProvider>
   );
 }
-
-export default App;
