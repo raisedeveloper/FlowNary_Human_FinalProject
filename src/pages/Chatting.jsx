@@ -20,4 +20,4 @@ export default function Chatting() {
             </Stack>
         </div>
     )                 
-}                         
+}                    
