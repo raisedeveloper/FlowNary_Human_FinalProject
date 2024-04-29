@@ -19,5 +19,5 @@ export default function Chatting() {
                 </Stack>
             </Stack>
         </div>
-    )                  
+    )                                 
 }                             
