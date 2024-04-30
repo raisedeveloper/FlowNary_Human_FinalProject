@@ -57,7 +57,7 @@ export default function Aside() {
       {/* 글쓰기 모달 */}
       <PostingModal />
 
-      {/* 메시지 모달*/}              
+      {/* 메시지 모달*/}                                
       <ChattingModal />
                                     
       {/* 설정 */}
