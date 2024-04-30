@@ -59,7 +59,7 @@ export default function Aside() {
 
       {/* 메시지 모달*/}
       <ChattingModal />
-
+                                    
       {/* 설정 */}
       <button className='asideStyle' onClick={SettingButton}>
         <Grid container>
