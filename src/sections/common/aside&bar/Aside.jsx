@@ -72,7 +72,7 @@ export default function Aside() {
         </Grid>
       </button>
 
-      {/* 마이 프로필 */}
+      {/* 마이 프로필 - name 변경 필요 */}
       <button className='asideStyle' onClick={ProfileButton}>
         <Grid container>
           <Grid item xs={12} lg={6} sx={{ display: { xs: 'flex', lg: 'flex' }, pl: 3 }}>
