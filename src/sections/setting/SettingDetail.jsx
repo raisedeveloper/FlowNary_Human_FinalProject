@@ -12,8 +12,22 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 // css 연결
 import './setting.css';
 import { MaterialUISwitch, AntSwitch } from './SettingSwitchStyles.jsx';
+import { GetWithExpiry } from "../../api/LocalStorage.js";
+import axios from "axios";
 
 export default function SettingDetail() {
+
+  // localStorage를 이용해서 user 받아오기
+  const uid = GetWithExpiry("uid");
+  const [user, setUser] = useState({});
+  axios.get('http://localhost:8090/user/getUser', {
+    params: {
+      uid: uid,
+    }
+  }).then(res => {
+    setUser(res.data);
+  }).catch(error => console.log(error));
+
   // 성별
   const [gender, setGender] = useState('');
   // 성별 이벤트
@@ -39,6 +53,30 @@ export default function SettingDetail() {
   //     // 변경 확인 버튼 클릭 시 실행될 로직
   //     console.log('비밀번호 변경 확인');
   // };
+
+
+  //// 변수 설정
+  const [uname, setUname] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [statusMessage, setStat] = useState('');
+
+  const handleText = (e, index) => {
+    switch(index) {
+      case 1:
+        setStat(e.target.value)
+        break;
+      case 2:
+        setUname(e.target.value)
+        break;
+      case 3:
+        setNickname(e.target.value)
+        break;
+    }
+  }
+
+  // const submitProfile = () => {
+
+  // }
 
   return (
     <>
@@ -73,7 +111,8 @@ export default function SettingDetail() {
             marginTop: '1%',
             width: '65%',
           }}>
-            <TextField id="outlined-basic" label="나로 말할거 같으면!" variant="outlined" fullWidth />
+            <TextField id="outlined-basic" label="나로 말할거 같으면!" variant="outlined" fullWidth
+            defaultValue={user.statusMessage} onChange={handleText(1)}/>
           </Box>
 
           {/* 성별 영역 */}
@@ -122,27 +161,33 @@ export default function SettingDetail() {
 
               {/* 프로필 편집 폼 */}
               <TextField
+                className="email-text"
+                id="standard-basic"
+                label="이메일"
+                variant="standard"
+                defaultValue={user.email}
+                disabled
+                fullWidth
+              /><br /><br />
+
+              <TextField
                 id="standard-basic"
                 label="이름"
                 variant="standard"
+                defaultValue={user.uname}
+                onChange={handleText(2)}
                 fullWidth  // 입력 폼 너비를 전체로 설정
-              /><br /><br />
+                /><br /><br />
 
               <TextField
                 className="nickname-text"
                 id="standard-basic"
                 label="닉네임"
                 variant="standard"
+                defaultValue={user.nickname}
+                onChange={handleText(3)}
                 fullWidth
-              /><br /><br />
-
-              <TextField
-                className="email-text"
-                id="standard-basic"
-                label="이메일"
-                variant="standard"
-                fullWidth
-              /><br /><br />
+                /><br /><br />
 
               <TextField
                 className="pwd-text"
@@ -215,7 +260,7 @@ export default function SettingDetail() {
                 </Stack>
 
                 <div style={{ textAlign: 'right', marginTop: '5%' }}>
-                  <Button variant="contained" color="primary"
+                  <Button variant="contained" color="primary" 
                     style={{ width: '35%' }}> 프로필 수정하기
                   </Button>
                 </div>

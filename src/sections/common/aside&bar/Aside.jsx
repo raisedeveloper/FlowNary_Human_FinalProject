@@ -11,13 +11,12 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 // Components/css 연결 
 import AlertModal from '../NoticeModal';
-import ChattingModal from '../chatting/ChattingModal';
+import ChattingModal from '../ChattingModal';
 import PostingModal from '../PostingModal';
 import '../notice.css';
 
 export default function Aside() {
   const logoImageLarge = '/img/LightLogo.png';
-  const logoImageXs = '/img/LightLogoXs.png';
   const navigate = useNavigate();
 
   const SettingButton = () => { navigate('/setting'); };
@@ -26,13 +25,8 @@ export default function Aside() {
   const BookmarkButton = () => { navigate('/profile/mypage'); };
 
   return (
-    <div style={{ position: 'fixed', top: 0, width: '20%' }}>
-      <Grid item lg={1.4} sx={{ placeItems: 'center', display: { xs: 'none', lg: 'flex' }, mb: '20px' }}>
-        <img src={logoImageLarge} alt='LOGO' style={{ width: '13%', marginLeft: '4%', alignItems: 'center', cursor: 'pointer' }} onClick={HomeButton} />
-      </Grid>
-      <Grid item xs={1.4} sx={{ placeItems: 'center', display: { xs: 'flex', lg: 'none' }, mb: '20px' }} >
-        <img src={logoImageXs} alt='LOGO' style={{ width: '13%', marginLeft: '35%', alignItems: 'center', cursor: 'pointer' }} onClick={HomeButton} />
-      </Grid>
+    <div style={{ position:'fixed', top:0, zIndex:'1', width: '40%'}}>
+      <img src={logoImageLarge} alt='LOGO' style={{ width: '13%',marginLeft:'40px', alignItems: 'center', cursor: 'pointer' }} onClick={HomeButton} />
       {/* 홈 */}
       <button className='asideStyle' onClick={HomeButton}>
         <Grid container>
