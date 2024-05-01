@@ -52,7 +52,7 @@ export default function Aside() {
             북마크
           </Grid>
         </Grid>
-      </button>
+      </button>               
 
       {/* 글쓰기 modal */}                           
       <PostingModal />
