@@ -54,7 +54,7 @@ export default function Aside() {
         </Grid>
       </button>
 
-      {/* 글쓰기 modal */}             
+      {/* 글쓰기 modal */}                           
       <PostingModal />
 
       {/* 메시지 modal*/}      
