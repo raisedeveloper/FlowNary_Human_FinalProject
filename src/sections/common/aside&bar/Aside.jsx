@@ -11,12 +11,13 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 // Components/css 연결 
 import AlertModal from '../NoticeModal';
-import ChattingModal from '../ChattingModal';
+import ChattingModal from '../chatting/ChattingModal';
 import PostingModal from '../PostingModal';
 import '../notice.css';
 
 export default function Aside() {
   const logoImageLarge = '/img/LightLogo.png';
+  const logoImageXs = '/img/LightLogoXs.png';
   const navigate = useNavigate();
 
   const SettingButton = () => { navigate('/setting'); };
@@ -25,8 +26,13 @@ export default function Aside() {
   const BookmarkButton = () => { navigate('/profile/mypage'); };
 
   return (
-    <div style={{ position:'fixed', top:0, zIndex:'1', width: '40%'}}>
-      <img src={logoImageLarge} alt='LOGO' style={{ width: '13%',marginLeft:'40px', alignItems: 'center', cursor: 'pointer' }} onClick={HomeButton} />
+    <div style={{ position: 'fixed', top: 0, width: '20%' }}>
+      <Grid item lg={1.4} sx={{ placeItems: 'center', display: { xs: 'none', lg: 'flex' }, mb: '20px' }}>
+        <img src={logoImageLarge} alt='LOGO' style={{ width: '35px', marginLeft: '4%', alignItems: 'center', cursor: 'pointer' }} onClick={HomeButton} />
+      </Grid>
+      <Grid item xs={1.4} sx={{ placeItems: 'center', display: { xs: 'flex', lg: 'none' }, mb: '20px' }} >
+        <img src={logoImageXs} alt='LOGO' style={{ width: '20px', marginLeft: '35%', alignItems: 'center', cursor: 'pointer' }} onClick={HomeButton} />
+      </Grid>
       {/* 홈 */}
       <button className='asideStyle' onClick={HomeButton}>
         <Grid container>
@@ -52,14 +58,14 @@ export default function Aside() {
             북마크
           </Grid>
         </Grid>
-      </button>               
+      </button>
 
-      {/* 글쓰기 modal */}                           
+      {/* 글쓰기 모달 */}
       <PostingModal />
 
-      {/* 메시지 modal*/}      
+      {/* 메시지 모달*/}
       <ChattingModal />
-                                    
+
       {/* 설정 */}
       <button className='asideStyle' onClick={SettingButton}>
         <Grid container>
@@ -72,7 +78,7 @@ export default function Aside() {
         </Grid>
       </button>
 
-      {/* 마이 프로필 - name 변경 필요 */}
+      {/* 마이 프로필 */}
       <button className='asideStyle' onClick={ProfileButton}>
         <Grid container>
           <Grid item xs={12} lg={6} sx={{ display: { xs: 'flex', lg: 'flex' }, pl: 3 }}>

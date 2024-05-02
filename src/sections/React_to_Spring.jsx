@@ -23,7 +23,7 @@ export default function React_to_Spring() {
         .then(res => {setNum(res.data)})
         .catch(function() {
             console.log('fail');
-        })                            
+        })
     }
 
 

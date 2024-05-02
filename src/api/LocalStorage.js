@@ -18,18 +18,13 @@ export function GetWithExpiry(key) {
     const navigate = useNavigate();
 
     if (!itemStr) {
-        if (key == 'uid' || key == 'email')
-        {
-            alert('로그인이 필요합니다')
-            navigate('/login')
-        }
         return null;
     }
 
     const item = JSON.parse(itemStr);
     const now = new Date();
 
-    if (now.getTime > item.expiry) {
+    if (now.getTime() > parseInt(item.expiry)) {
         localStorage.removeItem(key)
         if (key == 'uid' || key == 'email')
         {
