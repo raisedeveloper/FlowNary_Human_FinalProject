@@ -58,7 +58,7 @@ export default function Aside() {
             북마크
           </Grid>
         </Grid>
-      </button>    xxxx
+      </button> 
 
       {/* 글쓰기 모달 */}
       <PostingModal />
