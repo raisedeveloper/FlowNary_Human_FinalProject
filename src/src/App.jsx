@@ -12,7 +12,7 @@ function App() {
         <Outlet />
       </LocalizationProvider>
     </QueryClientProvider>
-  );
+  );                
 }                                 
 
 export default App;
