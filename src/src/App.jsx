@@ -13,6 +13,6 @@ function App() {
       </LocalizationProvider>
     </QueryClientProvider>
   );
-}
+}                                 
 
 export default App;
