@@ -11,7 +11,7 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDateFns}>                  
         <Outlet />          
       </LocalizationProvider>
-    </QueryClientProvider>          
+    </QueryClientProvider>           
   );                
 }                                 
             
