@@ -7,7 +7,7 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}> 
       <LocalizationProvider dateAdapter={AdapterDateFns}>                   
         <Outlet />          
       </LocalizationProvider>
