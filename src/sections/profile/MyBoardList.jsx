@@ -290,7 +290,7 @@ export default function MyBoardList() {
         {/* Avatar 태그 : 유튜브 프사처럼 동그란 이미지 넣을 수 있는 것 */}
         <Avatar sx={{ width: '15rem', height: '15rem', margin: '20px', fontSize: '60px' }}>
           R
-        </Avatar>  
+        </Avatar>    
         {/* 프사 옆 정보와 팔로우 버튼 만드는 Stack 공간 */}
         <Stack sx={{ padding: '20px' }} fontWeight={'bold'}>
           <Stack direction={'row'} spacing={2} sx={{ marginTop: '10px', marginBottom: '15px', display: 'flex', justifyContent: 'space-between' }}>
