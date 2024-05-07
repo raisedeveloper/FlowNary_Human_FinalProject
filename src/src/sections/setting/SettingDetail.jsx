@@ -73,7 +73,6 @@ export default function SettingDetail() {
   const [statusMessage, setStat] = useState('');
   const [profile, setProfile] = useState('');
   const [image, setImage] = useState('');
-  const [tel, setTel] = useState('');
   const [snsDomain, setSnsDomain] = useState('');
 
   const [birth, setBirth] = useState('');
@@ -99,50 +98,26 @@ export default function SettingDetail() {
   }, []);
 
   // 핸드폰 번호 입력 시 자동으로 '-' 추가
-  const handleTelChange = (e) => {
-    const input = e.target.value.replace(/[^0-9]/g, '');
-    let formattedTel = '';
-    let cursorPosition = e.target.selectionStart; // 커서의 현재 위치 저장
-  
-    if (input.length > 2) {
-      formattedTel += input.substring(0, 3) + '-';
-      if (input.length > 6) {
-        formattedTel += input.substring(3, 7) + '-';
-        formattedTel += input.substring(7, 11);
-      } else {
-        formattedTel += input.substring(3, input.length);
-      }
-    } else {
-      formattedTel = input;
-    }
-  
-    // 입력된 값이 삭제되지 않았을 때만 상태 업데이트
-    if (e.target.value.length >= formattedTel.length || e.target.value === formattedTel) {
-      setTel(formattedTel);
-    }
-  
-    // 입력한 위치로 커서 이동
-    const newCursorPosition = cursorPosition + (formattedTel.length - e.target.value.length);
-    e.target.value = formattedTel;
-  
-    // 입력된 값이 줄어들 때 하이픈이 사라지도록 처리
-    if (e.target.value.length < formattedTel.length) {
-      // 입력된 값이 줄어들 때 하이픈을 삭제
-      const deletedChar = e.target.value.charAt(newCursorPosition - 1);
-      if (deletedChar === '-') {
-        // 하이픈을 삭제하고, 커서를 하이픈의 위치로 이동시킴
-        const newFormattedTel = formattedTel.slice(0, newCursorPosition - 1) + formattedTel.slice(newCursorPosition);
-        setTel(newFormattedTel);
-        e.target.value = newFormattedTel;
-        e.target.setSelectionRange(newCursorPosition - 1, newCursorPosition - 1);
-        return;
-      }
-    }
-  
-    // 커서 위치 조정
-    e.target.setSelectionRange(newCursorPosition, newCursorPosition);
+  const [tel, setTel] = useState('');
+
+  const handleInputChange = e => {
+    const { value } = e.target;
+    setTel(value);
   };
-  
+
+  useEffect(() => {
+    let telValue = tel.replace(/[^0-9]/g, ''); // 숫자 이외의 문자 제거
+    if (telValue.length > 11) {
+      telValue = telValue.slice(0, 11);
+    }
+    if (telValue.length === 11) {
+      telValue = telValue.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    } else if (telValue.length === 13) {
+      telValue = telValue.replace(/-/g, '').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    }
+    setTel(telValue);
+  }, [tel]);
+
 
   useEffect(() => {
     if (uid != null) {
@@ -164,11 +139,7 @@ export default function SettingDetail() {
         setSnsDomain(res.data.snsDomain);
       }).catch(error => console.log(error));
     }
-
-  }
-    , [])
-
-
+  }    , [])
 
   const handleStat = (e) => { setStat(e.target.value); };
   const handleGender = (event) => { setGender(event.target.value === 'man' ? 0 : (event.target.value === 'woman' ? 1 : 2)); };
@@ -497,15 +468,16 @@ export default function SettingDetail() {
               <Grid item xs={8} md={10} lg={10.8}>
                 <LightTooltip title="' - ' 없이 숫자만 입력하세요." placement='bottom' >
                   <TextField
-                    required
                     fullWidth
                     label="전화번호"
                     variant="standard"
-                    value={tel || ''}
-                    onChange={handleTelChange}
+                    name="tel"
+                    value={tel}
+                    onChange={handleInputChange}
                     sx={{ mt: 2, width: '100%' }}
                   />
                 </LightTooltip>
+
               </Grid>
               <Grid item xs={4} md={2} lg={1.2}>
                 <Button onClick={checkTel} variant="contained" sx={{ backgroundColor: 'rgb(54, 11, 92)' }} style={{ margin: '20px 0px 0px 5px' }} >확인</Button>
