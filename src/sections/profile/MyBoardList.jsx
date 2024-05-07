@@ -301,7 +301,7 @@ export default function MyBoardList() {
           </Stack>
           <Stack direction={'row'} spacing={2} sx={{ marginTop: '10px', marginBottom: '15px' }}>
             <Box sx={{ cursor: 'pointer' }} >
-              게시물 수
+              게시물 수  
             </Box>
             <Box sx={{ cursor: 'pointer' }} onClick={() => handleOpen('팔로워', '여기에 팔로워 수에 대한 정보를 표시')}>
               팔로워 수
