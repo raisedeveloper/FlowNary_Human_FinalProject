@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import './profile.css'
 import ProfileMenu from './ProfileMenu';
 
-export default function IndexButton() {
+export default function IndexButton() {  
   // eslint-disable-next-line
   const [data, setData] = useState([{ x: '2024-01-01', y: '1' }, { x: '2024-01-02', y: '2' }, { x: '2024-01-03', y: '3' }]);
 
