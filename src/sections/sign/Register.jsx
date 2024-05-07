@@ -46,7 +46,7 @@ export default function Register() {
             const auth = getAuth();
             const provider = new GoogleAuthProvider();
             const data = await signInWithPopup(auth, provider);
-            console.log(data);
+
             axios.get("http://localhost:8090/user/register", {
                 params: {
                     email: data.user.email,
@@ -166,6 +166,15 @@ export default function Register() {
                     });
                 }
             });
+
+            axios.post('/user/register', userInfo)
+            .then(response => {
+                console.log("유저 데이터 들어옴", response.data);
+            })
+
+            .catch(error => {
+                console.error("ㄴㄴ다시해", error);
+            }) 
     }
 
     return (
