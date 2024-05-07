@@ -295,7 +295,7 @@ export default function MyBoardList() {
         <Stack sx={{ padding: '20px' }} fontWeight={'bold'}>
           <Stack direction={'row'} spacing={2} sx={{ marginTop: '10px', marginBottom: '15px', display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h4" fontWeight={'bold'}>
-              O O O
+              O O O  
             </Typography>
             <Button onClick={handleCheckingPwd}><SettingsIcon sx={{ fontSize: '50px', color: 'darkgray' }} /></Button>
           </Stack>
