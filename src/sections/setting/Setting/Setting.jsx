@@ -5,7 +5,7 @@ import { Stack } from "@mui/material";
 // components 연결
 import SnsBar from '../../common/aside&bar/SnsBar';
 import Aside from "../../common/aside&bar/Aside";
-import SettingDetail from '../SettingDetail'
+import SettingDetail from '../Setting'
 
 export default function Setting() {
     return (
@@ -18,7 +18,7 @@ export default function Setting() {
                         <Aside />
                     </Stack>
                 </Stack>
-                <Stack direction="column" spacing={2} sx={{ flex: 1.5, boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
+                <Stack direction="column" spacing={2} sx={{ flex: 1.5}}>
                     <SettingDetail />
                 </Stack>
             </Stack>

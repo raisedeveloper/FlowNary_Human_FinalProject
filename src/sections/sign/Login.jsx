@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
+import { SetWithExpiry } from "../../api/LocalStorage";
 
 // firebase 연결
 import { login } from "../../api/firebase";
@@ -14,13 +15,13 @@ import './theme.css'; // CSS 임포트
 import Swal from "sweetalert2";
 import axios from "axios";
 
-import { useUser } from '../../UserContext';
-
 export default function Login() {
     const [theme, setTheme] = useState('light'); // 초기 테마를 'light'로 설정
 
     // 테마를 토글하는 함수
-    const toggleTheme = () => { setTheme(theme === 'light' ? 'dark' : 'light'); };
+    const toggleTheme = () => {
+        setTheme(theme === 'light' ? 'dark' : 'light');
+    };
 
     const auth = getAuth();
 
@@ -40,48 +41,84 @@ export default function Login() {
         try {
             const auth = getAuth();
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
-            Swal.fire({
-                icon: 'success',
-                title: "구글 로그인에 성공했습니다.",
-                showClass: {
-                    popup: `
-                    animate__animated
-                    animate__fadeInUp
-                    animate__faster
-                  `
-                },
-                hideClass: {
-                    popup: `
-                    animate__animated
-                    animate__fadeOutDown
-                    animate__faster
-                  `
-                }
-            });
+            const data = await signInWithPopup(auth, provider);
 
-            console.log("구글 로그인 성공!");
-
-            axios.get('http://localhost:8090/user/getUserEmail', {
+            // 이메일로 사용자 조회
+            const response = await axios.get('http://localhost:8090/user/getUserByEmail', {
                 params: {
                     email: data.user.email
                 }
-            }).then(res => {
-                SetWithExpiry("uid", res.data.id, 180);
-                SetWithExpiry("email", res.data.email, 180);
-                SetWithExpiry("profile", res.data.profile, 180);
-            }).catch(error => console.log(error));
+            });
 
+            // 사용자가 존재하지 않으면 회원가입 진행
+            if (Object.keys(response.data).length === 0) {
+                await axios.get("http://localhost:8090/user/register", {
+                    params: {
+                        email: data.user.email,
+                        pwd: 'nn',
+                        hashuid: data.user.uid,
+                        provider: 1,
+                    }
+                });
+                // 회원가입 성공 시 로컬 스토리지 설정 및 리다이렉트
+                SetWithExpiry("email", data.user.email, 180);
+                Swal.fire({
+                    icon: 'success',
+                    title: "구글 회원가입에 성공했습니다.",
+                    showClass: {
+                        popup: `
+                                animate__animated
+                                animate__fadeInUp
+                                animate__faster
+                            `
+                    },
+                    hideClass: {
+                        popup: `
+                                animate__animated
+                                animate__fadeOutDown
+                                animate__faster
+                            `
+                    }
+                });
+                console.log("구글 회원가입 성공!" + response);
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: "구글 로그인에 성공했습니다.",
+                    showClass: {
+                        popup: `
+                                animate__animated
+                                animate__fadeInUp
+                                animate__faster
+                            `
+                    },
+                    hideClass: {
+                        popup: `
+                                animate__animated
+                                animate__fadeOutDown
+                                animate__faster
+                            `
+                    }
+                });
+                console.log("구글 로그인 성공!" + response);
+            }
             navigate('/');
         } catch (error) {
             console.error("구글 로그인 오류:", error);
         }
     };
 
-    const { setUserData } = useUser();
 
-    const handleSubmit = async e => {
-        e.preventDefault();
+
+    function handleKeyPress(event) {
+        if (event && event.key === 'Enter') {
+            event.preventDefault(); // 기본 동작 방지
+            handleSubmit();
+        }
+    }
+
+    const handleSubmit = async () => {
+        // e.preventDefault();
 
         try {
             // 이메일이 빈칸인 경우
@@ -103,11 +140,10 @@ export default function Login() {
             }
 
             // Firebase Authentication을 통해 사용자를 인증합니다.
-            const userCredential = await signInWithEmailAndPassword(auth, userInfo.email, userInfo.password);
-            const user = userCredential.user;
+            const checkuser = await signInWithEmailAndPassword(auth, userInfo.email, userInfo.password);
 
             // 사용자가 존재하는 경우
-            if (user) {
+            if (checkuser) {
                 login(userInfo);
                 Swal.fire({
                     position: "center",
@@ -116,26 +152,8 @@ export default function Login() {
                     showConfirmButton: false,
                     timer: 1200
                 });
-                // axios.get('/user/login', {
-                //     params: {
-                //         uid: userInfo.uid,
-                //         email: userInfo.email,
-                //         pwd: userInfo.password,
-                //         profile: userInfo.profile,
-                //         uname: userInfo.uname,
-                //         nickname: userInfo.nickname,
-                //         statusMessage: userInfo.statusMessage,
-                //         snsDomain: userInfo.snsDomain,
-                //         tel: userInfo.tel,
-                //         hashUid: userInfo.hashUid,
-                //         status: userInfo.status,
-                //         gender: userInfo.gender,
-                //         provider: userInfo.provider,
-                //         regDate: userInfo.regDate,
-                //         birth: userInfo.birth
-                //     }
-                // });
-                axios.get('http://localhost:8090/user/getUserEmail', {
+
+                axios.get('http://localhost:8090/user/getUserByEmail', {
                     params: {
                         email: userInfo.email
                     }
@@ -144,9 +162,8 @@ export default function Login() {
                     SetWithExpiry("email", res.data.email, 180);
                     SetWithExpiry("profile", res.data.profile, 180);
                 }).catch(error => console.log(error));
-                
-                setUserData(user);
-                navigate('/home');
+
+                navigate('/');
             }
         } catch (error) {
             // Firebase 오류 처리를 좀 더 일반적인 메시지로 통합
@@ -159,7 +176,6 @@ export default function Login() {
             console.error(error);
         }
     }
-
 
     return (
         <div className={`background ${theme}`} style={{
@@ -176,12 +192,12 @@ export default function Login() {
 
                     <br />
                     <input type="email" name='email' placeholder="닉네임 혹은 이메일" className="commonInputStyle"
-                        onChange={handleChange} />
+                        onChange={handleChange} onKeyUp={handleKeyPress} />
                     <br />
                     <input type="password" name='password' placeholder="비밀번호" className="commonInputStyle"
-                        onChange={handleChange} />
+                        onChange={handleChange} onKeyUp={handleKeyPress} />
                     <br />
-                    <button className="fill" onClick={handleSubmit}>로그인</button>
+                    <button className="fill" onClick={handleSubmit} >로그인</button>
                     <p style={{
                         marginTop: '3px', marginBottom: '10px',
                         color: theme === 'light' ? '#dca3e7' : '#ffffff'

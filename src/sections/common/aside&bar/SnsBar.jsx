@@ -1,7 +1,7 @@
 // 기본
 import { React, useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
-import { AppBar, Box, Grid, Button, Modal, TextField, Toolbar } from '@mui/material';
+import { useLocation, useNavigate } from "react-router-dom";
+import { AppBar, Box, Grid, Button, Modal, TextField, Toolbar, Avatar } from '@mui/material';
 
 // 아이콘
 import SearchIcon from '@mui/icons-material/Search';
@@ -14,7 +14,9 @@ import { initializeApp } from "firebase/app";
 // 스타일 부분 연결
 import '../notice.css';
 import { Search, SearchIconWrapper, StyledInputBase } from '../snsbarStyle.jsx';
-import { useUser } from '../../../UserContext.js';
+
+// 세션 연결
+import { GetWithExpiry } from "../../../api/LocalStorage.js";
 
 // firebase Api 연결
 const firebaseConfig = {
@@ -25,7 +27,10 @@ const firebaseConfig = {
 
 export default function SnsBar() {
 
-  const { userData } = useUser();
+  // const uid = parseInt(GetWithExpiry("uid"));
+  const email = GetWithExpiry("email");
+  const profile = GetWithExpiry("profile");
+  const location = useLocation();
 
   // 반응형 로고 변환
   const logoImageLarge = '/img/LightLogo.png';
@@ -33,13 +38,27 @@ export default function SnsBar() {
 
   // Modal 창 열고 끄기
   const [open, setOpen] = useState(false);
+  const [searchtext, setSearchtext] = useState(sessionStorage.getItem("search"));
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   // 버튼 경로 지정
   const navigate = useNavigate();
   const HomeButton = () => { navigate('/'); };
-  const handleSearch = () => { navigate('/search'); }
+  const handleSearch = () => {
+    if (searchtext === '' || searchtext === null) {
+      alert('검색어를 입력하십시오');
+    }
+    else {
+      sessionStorage.setItem("search", searchtext);
+      if (location.pathname !== 'search') {
+        navigate('/search');
+      }
+      else {
+        window.location.replace('/search');
+      }
+    }
+  }
   const handleLinkToLogin = () => { navigate('/login'); }
 
   // firebase 기초 설정
@@ -49,6 +68,7 @@ export default function SnsBar() {
   const auth = getAuth();
 
   // firebase 로그인 구현
+  // eslint-disable-next-line 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -61,20 +81,27 @@ export default function SnsBar() {
   // firebase 로그아웃(2024/04/30 - 정성한 수정)
   const handleLogout = () => {
     signOut(auth).then(() => {
-      console.log('로그아웃 성공');      
+      console.log('로그아웃 성공');
       navigate('/login');
       localStorage.removeItem("uid");
       localStorage.removeItem("email");
       localStorage.removeItem("profile");
     })
       .catch((error) => {
-        console.error('로그아웃 오류:', error);        
+        console.error('로그아웃 오류:', error);
       });
   };
 
+  const handleSearchText = (e) => {
+    setSearchtext(e.target.value);
+  }
+  const handleErase = () => {
+    setSearchtext('');
+  }
+
   return (
     <div style={{ marginBottom: '6%' }} >
-      <AppBar position="absolute" sx={{ background: 'linear-gradient(to right, #7B68EE, rgb(28, 0, 53))', boxShadow: 'none' }}>
+      <AppBar position="absolute" sx={{ background: 'rgb(58, 0, 85)', boxShadow: 'none' }}>
         <Toolbar>
 
           <Grid container spacing={1}>
@@ -89,11 +116,11 @@ export default function SnsBar() {
               <img src={logoImageXs} alt='LOGO' style={{ width: '20px', alignItems: 'center', cursor: 'pointer' }} onClick={HomeButton} />
             </Grid>
 
-            <Grid item xs={3} lg={1.8}>
+            <Grid item xs={3} lg={0.8}>
             </Grid>
 
             {/* 검색창 부분 */}
-            <Grid item xs={2} lg={5.5} sx={{ placeItems: 'center', display: 'flex', justifyContent: 'center' }}>
+            <Grid item xs={2} lg={6.3} sx={{ placeItems: 'center', display: 'flex', justifyContent: 'center' }}>
               <Search sx={{ borderRadius: 50, display: { xs: 'flex', lg: 'none' }, alignItems: 'center', justifyContent: 'center' }}  >
                 <Button sx={{ cursor: 'pointer' }} onClick={handleOpen}>
                   <SearchIcon sx={{ color: 'white' }} />
@@ -101,13 +128,15 @@ export default function SnsBar() {
                 <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description"
                   sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
-                  <Box sx={{ display: 'flex' }} className='search_modal'>
+                  <Box sx={{ display: 'flex', width: '100%' }} >
                     <Grid container>
                       <Grid item xs={8}>
                         <TextField
                           id="outlined-multiline-flexible"
                           label="검색"
                           variant="standard"
+                          onChange={handleSearchText}
+                          value={searchtext}
                         />
                       </Grid>
                       <Grid item xs={2}>
@@ -121,25 +150,29 @@ export default function SnsBar() {
                 </Modal>
               </Search>
               <Search sx={{ borderRadius: 50, display: { xs: 'none', lg: 'flex' } }}  >
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
                 <StyledInputBase
                   placeholder="검색"
                   inputProps={{ 'aria-label': 'search' }}
+                  onChange={handleSearchText}
+                  value={searchtext}
                 />
-                <Button sx={{ cursor: 'pointer' }} onClick={handleClose}><CloseIcon sx={{ color: 'white' }} /></Button>
+                {searchtext ? <Button sx={{ cursor: 'pointer' }} onClick={handleErase}><CloseIcon sx={{ color: 'white' }} /></Button> : <></>}
+                <Button sx={{ cursor: 'pointer' }} onClick={handleSearch}><SearchIcon sx={{ color: 'white' }} /></Button>
               </Search>
             </Grid>
 
-            <Grid item xs={3} lg={2.1}>
+            <Grid item xs={2} lg={1.1}>
             </Grid>
 
             {/* 로그아웃 또는 로그인 버튼 부분*/}
-            <Grid item xs={1.5} lg={1} sx={{ placeItems: 'center', justifyContent: 'flex-end', display: 'flex' }}>
-              {userData && userData.email ? (
+            <Grid item xs={2.5} lg={2} sx={{ placeItems: 'center', justifyContent: 'flex-end', display: 'flex' }}>
+              {email ? (
                 <>
-                  <span>{userData.email}</span>
+                    <Avatar
+                      sx={{backgroundColor:'white', marginRight:'.5rem'}}
+                      src={`https://res.cloudinary.com/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload/${profile}`}
+                     />                                          
+                  <span>{email.split('@')[0]}</span>
                   <Button style={{ color: 'white', opacity: 0.7 }} onClick={handleLogout}>로그아웃</Button>
                 </>
               ) : (
