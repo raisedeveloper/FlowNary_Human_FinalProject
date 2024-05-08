@@ -304,7 +304,7 @@ export default function SettingDetail() {
               variant="standard"
               value={uname || ''}
               onChange={handleUname}
-              sx={{ mt: 2, width: '100%' }}
+              sx={{ mt: 2, width: '100%' }}  
             />
 
             {/* 닉네임 입력 */}
