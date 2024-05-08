@@ -298,7 +298,7 @@ export default function SettingDetail() {
 
             {/* 이름 입력 */}
             <TextField
-              required
+              required  
               fullWidth
               label="이름"
               variant="standard"
