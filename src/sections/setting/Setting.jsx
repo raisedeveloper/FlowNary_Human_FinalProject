@@ -297,7 +297,7 @@ export default function SettingDetail() {
             </Box>
 
             {/* 이름 입력 */}
-            <TextField
+            <TextField  
               required    
               fullWidth
               label="이름"
