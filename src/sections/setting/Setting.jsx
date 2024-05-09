@@ -302,7 +302,7 @@ export default function SettingDetail() {
               fullWidth
               label="이름"
               variant="standard"
-              value={uname || ''}  
+              value={uname || ''}    
               onChange={handleUname}  
               sx={{ mt: 2, width: '100%' }}  
             />
