@@ -303,7 +303,7 @@ export default function SettingDetail() {
               label="이름"
               variant="standard"
               value={uname || ''}  
-              onChange={handleUname}
+              onChange={handleUname}  
               sx={{ mt: 2, width: '100%' }}  
             />
 
